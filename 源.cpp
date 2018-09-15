@@ -16,38 +16,35 @@ using namespace cv;
 int main()
 {
 	Mat srcImg, grayImg;
-	srcImg = imread("2.jpg");       //¶ÁÈëÍ¼Ïñ²¢³õÊ¼»¯Îª»Ò¶ÈÍ¼»Ò¶ÈÍ¼
+	srcImg = imread("2.jpg");       //è¯»å…¥å›¾åƒå¹¶åˆå§‹åŒ–ä¸ºç°åº¦å›¾ç°åº¦å›¾
 	cvtColor(srcImg, grayImg, CV_RGB2GRAY);
-	//ÅĞ¶ÏÍ¼ÏñÊÇ·ñ¼ÓÔØ³É¹¦
+	//åˆ¤æ–­å›¾åƒæ˜¯å¦åŠ è½½æˆåŠŸ
 	if (grayImg.empty())
 	{
-		cout << "Í¼Ïñ¼ÓÔØÊ§°Ü!" << endl;
+		cout << "å›¾åƒåŠ è½½å¤±è´¥!" << endl;
 		return -1;
 	}
 	else
-		cout << "Í¼Ïñ¼ÓÔØ³É¹¦!" << endl << endl;
+		cout << "å›¾åƒåŠ è½½æˆåŠŸ!" << endl << endl;
 
-	Mat padded;                 //ÒÔ0Ìî³äÊäÈëÍ¼Ïñ¾ØÕó
+	Mat padded;                 //ä»¥0å¡«å……è¾“å…¥å›¾åƒçŸ©é˜µ
 	int m = grayImg.rows;
 	int n = grayImg.cols;
 	cout << n << endl << endl;
 	cout << m << endl << endl;
-	//							//ÓÃ0Ìî³äÊäÈëÍ¼ÏñgrayImg
+	//							//ç”¨0å¡«å……è¾“å…¥å›¾åƒgrayImg
 	copyMakeBorder(grayImg, padded, 0, m - grayImg.rows, 0, n - grayImg.cols, BORDER_CONSTANT, Scalar::all(0));
 	padded = grayImg;
-	Mat planes[] = { Mat_<float>(padded), Mat::zeros(padded.size(),CV_32F) };		//³õÊ¼»¯Ê±ÓòºÍ¸´ÆµÓò
+	Mat planes[] = { Mat_<float>(padded), Mat::zeros(padded.size(),CV_32F) };		//åˆå§‹åŒ–æ—¶åŸŸå’Œå¤é¢‘åŸŸ
 	Mat complexI;
-	merge(planes, 2, complexI);     //½«ÊµÊıÓòºÍĞéÊıÓòºÏ²¢Îª¸´ÊıÓò
+	merge(planes, 2, complexI);     //å°†å®æ•°åŸŸå’Œè™šæ•°åŸŸåˆå¹¶ä¸ºå¤æ•°åŸŸ
 
-	dft(complexI, complexI);			//¶ÔÍ¼Ïñ½øĞĞ¸µÀïÒ¶±ä»»
+	dft(complexI, complexI);			//å¯¹å›¾åƒè¿›è¡Œå‚…é‡Œå¶å˜æ¢
 	
-	//idft(gaussianBlur, inverseDFT, DFT_SCALE | DFT_REAL_OUTPUT); // Applying IDFT
-	//inverseDFT.convertTo(inverseDFTconverted, CV_8U);
-	//Scalar s1 = sum(gaussianBlur);
-	//imshow("Output", inverseDFTconverted);
-	split(complexI, planes);        //½«¸´ÊıÓò·Ö¸îÎªÊµ²¿planes[0]£¬Ğé²¿planes[1]
+	
+	split(complexI, planes);        //å°†å¤æ•°åŸŸåˆ†å‰²ä¸ºå®éƒ¨planes[0]ï¼Œè™šéƒ¨planes[1]
 
-	magnitude(planes[0], planes[1], planes[0]);     //¼ÆËã¶şÎ¬ÏòÁ¿µÄ·ùÖµ
+	magnitude(planes[0], planes[1], planes[0]);     //è®¡ç®—äºŒç»´å‘é‡çš„å¹…å€¼
 	Mat fourier_Img = planes[0].clone();
 
 	fourier_Img += Scalar::all(1);
@@ -58,7 +55,7 @@ int main()
 	log(fourier_Img, fourier_Img);
 
 
-	//ÓÉÓÚ¸µÀïÒ¶±ä»»ÆµÆ×·¶Î§¹ã£¬½«ÏßĞÔ×ø±ê»»³É¶ÔÊı×ø±ê½ÚÔ¼¿Õ¼ä
+	//ç”±äºå‚…é‡Œå¶å˜æ¢é¢‘è°±èŒƒå›´å¹¿ï¼Œå°†çº¿æ€§åæ ‡æ¢æˆå¯¹æ•°åæ ‡èŠ‚çº¦ç©ºé—´
 
 	fourier_Img = fourier_Img(Rect(0, 0, fourier_Img.cols&-2, fourier_Img.rows&-2));
 	int bx = fourier_Img.cols / 2;
@@ -78,22 +75,22 @@ int main()
 	tmp1.copyTo(p2);
 	normalize(fourier_Img, fourier_Img, 0, 1, CV_MINMAX);
 
-	//½«ÆµÆ×ÖØĞÂ°´ÕÕËÄ¸öÏóÏŞ½øĞĞÅÅÁĞ
-	int cx = jisuan_fu1.cols / 2;			//³õÊ¼»¯ÆµÆ×Í¼µÄºá×İ×ø±ê
+	//å°†é¢‘è°±é‡æ–°æŒ‰ç…§å››ä¸ªè±¡é™è¿›è¡Œæ’åˆ—
+	int cx = jisuan_fu1.cols / 2;			//åˆå§‹åŒ–é¢‘è°±å›¾çš„æ¨ªçºµåæ ‡
 	int cy = jisuan_fu1.rows / 2;
 
-	Mat q0 = Mat(complexI, Rect(0, 0, cx, cy));       //×óÉÏ½ÇÍ¼Ïñ»®¶¨ROIÇøÓò
-	Mat q1 = Mat(complexI, Rect(cx, 0, cx, cy));      //ÓÒÉÏ½ÇÍ¼Ïñ
-	Mat q2 = Mat(complexI, Rect(0, cy, cx, cy));      //×óÏÂ½ÇÍ¼Ïñ
-	Mat q3 = Mat(complexI, Rect(cx, cy, cx, cy));     //ÓÒÏÂ½ÇÍ¼Ïñ
+	Mat q0 = Mat(complexI, Rect(0, 0, cx, cy));       //å·¦ä¸Šè§’å›¾åƒåˆ’å®šROIåŒºåŸŸ
+	Mat q1 = Mat(complexI, Rect(cx, 0, cx, cy));      //å³ä¸Šè§’å›¾åƒ
+	Mat q2 = Mat(complexI, Rect(0, cy, cx, cy));      //å·¦ä¸‹è§’å›¾åƒ
+	Mat q3 = Mat(complexI, Rect(cx, cy, cx, cy));     //å³ä¸‹è§’å›¾åƒ
 
-											//±ä»»×óÉÏ½ÇºÍÓÒÏÂ½ÇÏóÏŞ
+											//å˜æ¢å·¦ä¸Šè§’å’Œå³ä¸‹è§’è±¡é™
 	Mat tmp;
 	q0.copyTo(tmp);
 	q3.copyTo(q0);
 	tmp.copyTo(q3);
 
-	//±ä»»ÓÒÉÏ½ÇºÍ×óÏÂ½ÇÏóÏŞ
+	//å˜æ¢å³ä¸Šè§’å’Œå·¦ä¸‹è§’è±¡é™
 	q1.copyTo(tmp);
 	q2.copyTo(q1);
 	tmp.copyTo(q2);
@@ -109,8 +106,8 @@ int main()
 
 	//split(complexI, planes);
 	Mat filter = Mat(planes[0].size(), CV_32F);
-	//filter = imread("¶şÌõ.jpg");
-	filter = imread("°ËÍ².jpg");
+	//filter = imread("äºŒæ¡.jpg");
+	filter = imread("å…«ç­’.jpg");
 	cvtColor(filter, filter, CV_RGB2GRAY);
 	imshow("ada",filter);
 	normalize(filter, filter, 0, 1, CV_MINMAX);
@@ -137,8 +134,7 @@ int main()
 		}
 	}
 
-	/*planes[0] = planes[0].mul(filter);
-	planes[1] = planes[1].mul(filter);*/
+
 
 	merge(planes, 2, complexI);
 
@@ -146,7 +142,7 @@ int main()
 
 
 
-	//¹éÒ»»¯´¦Àí£¬ÓÃ0-1Ö®¼äµÄ¸¡µãÊı½«¾ØÕó±ä»»Îª¿ÉÊÓµÄÍ¼Ïñ¸ñÊ½
+	//å½’ä¸€åŒ–å¤„ç†ï¼Œç”¨0-1ä¹‹é—´çš„æµ®ç‚¹æ•°å°†çŸ©é˜µå˜æ¢ä¸ºå¯è§†çš„å›¾åƒæ ¼å¼
 	//normalize(fourier_Img, fourier_Img, 0, 1, CV_MINMAX);
 
 	//int bx = planes[1].cols / 2;
@@ -167,21 +163,21 @@ int main()
 
 
 
-	// cx = jisuan_fu1.cols / 2;			//³õÊ¼»¯ÆµÆ×Í¼µÄºá×İ×ø±ê
+	// cx = jisuan_fu1.cols / 2;			//åˆå§‹åŒ–é¢‘è°±å›¾çš„æ¨ªçºµåæ ‡
 	// cy = jisuan_fu1.rows / 2;
 
-	// q0 = Mat(planes[0], Rect(0, 0, cx, cy));       //×óÉÏ½ÇÍ¼Ïñ»®¶¨ROIÇøÓò
-	// q1 = Mat(planes[0], Rect(cx, 0, cx, cy));      //ÓÒÉÏ½ÇÍ¼Ïñ
-	// q2 = Mat(planes[0], Rect(0, cy, cx, cy));      //×óÏÂ½ÇÍ¼Ïñ
-	// q3 = Mat(planes[0], Rect(cx, cy, cx, cy));     //ÓÒÏÂ½ÇÍ¼Ïñ
+	// q0 = Mat(planes[0], Rect(0, 0, cx, cy));       //å·¦ä¸Šè§’å›¾åƒåˆ’å®šROIåŒºåŸŸ
+	// q1 = Mat(planes[0], Rect(cx, 0, cx, cy));      //å³ä¸Šè§’å›¾åƒ
+	// q2 = Mat(planes[0], Rect(0, cy, cx, cy));      //å·¦ä¸‹è§’å›¾åƒ
+	// q3 = Mat(planes[0], Rect(cx, cy, cx, cy));     //å³ä¸‹è§’å›¾åƒ
 
-	//											 //±ä»»×óÉÏ½ÇºÍÓÒÏÂ½ÇÏóÏŞ
+	//											 //å˜æ¢å·¦ä¸Šè§’å’Œå³ä¸‹è§’è±¡é™
 	//
 	q0.copyTo(tmp);
 	q3.copyTo(q0);
 	tmp.copyTo(q3);
 
-	//±ä»»ÓÒÉÏ½ÇºÍ×óÏÂ½ÇÏóÏŞ
+	//å˜æ¢å³ä¸Šè§’å’Œå·¦ä¸‹è§’è±¡é™
 	q1.copyTo(tmp);
 	q2.copyTo(q1);
 	tmp.copyTo(q2);
@@ -191,57 +187,9 @@ int main()
 
 
 
-	/* bx = jisuan_fu2.cols / 2;
-	 by = jisuan_fu2.rows / 2;
-	 p0 = Mat(planes[1], Rect(0, 0, bx, by));
-	 p1 = Mat(planes[1], Rect(bx, 0, bx, by));
-	 p2 = Mat(planes[1], Rect(0, by, bx, by));
-	 p3 = Mat(planes[1], Rect(bx, by, bx, by));*/
-
-	/*p0.copyTo(tmp1);
-	p3.copyTo(p0);
-	tmp1.copyTo(p3);
-
-	p1.copyTo(tmp1);
-	p2.copyTo(p1);
-	tmp1.copyTo(p2);*/
-	//int mx = jisuan_fu2.cols / 2;
-	//int my = jisuan_fu2.rows / 2;
-	//Mat r0 = Mat(planes[1], Rect(0, 0, mx, my));
-	//Mat r1 = Mat(planes[1], Rect(mx, 0, mx, my));
-	//Mat r2 = Mat(planes[1], Rect(0, my, mx, my));
-	//Mat r3 = Mat(planes[1], Rect(mx, my, mx, my));
-
-	//Mat tmp2;
-	//r0.copyTo(tmp2);
-	//r3.copyTo(r0);
-	//tmp2.copyTo(r3);
-
-	//r1.copyTo(tmp2);
-	//r2.copyTo(r1);
-	//tmp2.copyTo(r2);
 
 
-	//int nx = jisuan_fu1.cols / 2;			//³õÊ¼»¯ÆµÆ×Í¼µÄºá×İ×ø±ê
-	//int ny = jisuan_fu1.rows / 2;
-
-	//Mat t0(planes[0], Rect(0, 0, nx, ny));       //×óÉÏ½ÇÍ¼Ïñ»®¶¨ROIÇøÓò
-	//Mat t1(planes[0], Rect(nx, 0, nx, ny));      //ÓÒÉÏ½ÇÍ¼Ïñ
-	//Mat t2(planes[0], Rect(0, ny, nx, ny));      //×óÏÂ½ÇÍ¼Ïñ
-	//Mat t3(planes[0], Rect(nx, ny, nx, ny));     //ÓÒÏÂ½ÇÍ¼Ïñ
-
-	//											  //±ä»»×óÉÏ½ÇºÍÓÒÏÂ½ÇÏóÏŞ
-	//Mat tmp3;
-	//t0.copyTo(tmp3);
-	//t3.copyTo(t0);
-	//tmp3.copyTo(t3);
-
-	////±ä»»ÓÒÉÏ½ÇºÍ×óÏÂ½ÇÏóÏŞ
-	//t1.copyTo(tmp3);
-	//t2.copyTo(t1);
-	//tmp3.copyTo(t2);
-
-	Mat lvwanbo_fu;//idftºóµÄ¾ØÕó
+	Mat lvwanbo_fu;//idftåçš„çŸ©é˜µ
 	/*merge(planes,2, lvwanbo_fu);*/
 	
 	idft(complexI, lvwanbo_fu);
@@ -252,24 +200,15 @@ int main()
 	normalize(plane1[0], plane1[0], 0, 1, CV_MINMAX);
 	Mat result;
 	result = Mat(plane1[0], Rect(0, 0, grayImg.cols, grayImg.rows));
-	//µÃµ½¹éÒ»»¯ºóµÄ½á¹ûÍ¼Ïñ
-	//Mat plane1 []= { Mat::zeros(jisuan_fu.size(), CV_32F), Mat::zeros(jisuan_fu.size(), CV_32F) };
-	//idft(jisuan_fu, jisuan_fu);
-	//split(jisuan_fu, plane1);
-	//magnitude(plane1[0], plane1[1], plane1[0]);
-	//
-	//cv::normalize(plane1[0], plane1[0], 0, 1, CV_MINMAX);
-	///*plane1[0] = 100000000*plane1[0];*/
-	///*normalize(plane1[0], plane1[0], 0, 1, CV_MINMAX);*/
-	//cout << plane1[0] << endl << endl;
+	
 	Mat huanyuantu;
 	//huanyuantu = Mat(plane1[0], Rect(0, 0,grayImg.cols,grayImg.rows));
 	imshow("sasas", grayImg);
 	
 	
 
-	imshow("Ô­Ê¼Í¼Ïñ", result);
-	imshow("¸µÀïÒ¶ÆµÆ×Í¼", fourier_Img);
+	imshow("åŸå§‹å›¾åƒ", result);
+	imshow("å‚…é‡Œå¶é¢‘è°±å›¾", fourier_Img);
 	/*cout << plane1[0] << endl << endl;*/
 	waitKey(0);
 
